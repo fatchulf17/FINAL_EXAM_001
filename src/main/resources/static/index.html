@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <title>Surat</title>
+    </head>
+    <body>
+         <h1>Surat</h1>
+    <hr />
+    <script>
+      const url = "http://localhost:8080/surat";
+      //get data from server
+      function get() {
+        $.ajax({
+          url: url,
+          method: "GET",
+          dataType: "json",
+          success: function (data) {
+            //start function
+            $("#mytable").find("tbody").empty(); //for empty table if data exists
+            $.each(data, function (key, value) {
+              //fill data to table
+              var td =
+                "<tr><td>" + value.id + "</td> <td>" + value.noSurat+ "</td> <td>" + value.judul + "</td> <td>" + value.tembusan  +  "</td> </tr>"+ value.file  +  "</td> </tr>"+ value.timeStamp  +  "</td> </tr>";
+              $("#mytable").find("tbody").append(td);
+            });
+          }
+        });
+      }
+      
+       function post() {
+        let idsrt = document.getElementById("id").value;
+        let nosrt = document.getElementById("noSurat").value;
+        let jdl = document.getElementById("judul").value;
+        let tmb = document.getElementById("tembusan").value;
+        let file = document.getElementById("file").value;
+        let ts = document.getElementById("timeStamp").value;
+        let dataText = { id: idsrt, noSurat:nosrt, judul:jdl, tembusan:tmb};
+        let dataJson = JSON.stringify(dataText);
+        $.ajax({
+          url: url,
+          method: "POST",
+          data: dataJson,
+          contentType: "application/json",
+          dataType: "text",
+          success: function (result) {
+            document.getElementById("view").innerHTML = result;
+            get();
+          },
+        });
+      }
+
+      function put() {
+        let idsrt = document.getElementById("id").value;
+        let nosrt = document.getElementById("noSurat").value;
+        let jdl = document.getElementById("judul").value;
+        let tmb = document.getElementById("tembusan").value;
+        let file = document.getElementById("file").value;
+        let ts = document.getElementById("timeStamp").value;
+        let dataText = { id: idsrt, noSurat:nosrt, judul:jdl, tembusan:tmb};
+        let dataJson = JSON.stringify(dataText);
+        $.ajax({
+          url: url,
+          method: "PUT",
+          data: dataJson,
+          contentType: "application/json",
+          dataType: "text",
+          success: function (result) {
+              document.getElementById("view").innerHTML = result;
+            get();
+          },
+        });
+      }
+
+      function delID() {
+        let editID = document.getElementById("id").value;
+        let dataText = { id: editID };
+        let dataJson = JSON.stringify(dataText);
+        $.ajax({
+          url: url,
+          method: "DELETE",
+          data: dataJson,
+          contentType: "application/json",
+          dataType: "text",
+          success: function (result) {
+              document.getElementById("view").innerHTML = result;
+            get();
+          },
+        });
+      }
+    </script>
+    <table>
+      <tr>
+        <td>ID</td>
+        <td>:</td>
+        <td><input type="text" id="id" name="id" /></td>
+        <td><button onclick="get()">GET</button></td>
+      </tr>
+      <tr>
+        <td>No Surat</td>
+        <td>:</td>
+        <td><input type="text" id="noSurat" name="noSurat" /></td>
+        <td><button onclick="post()">INSERT</button></td>
+      </tr>
+      <tr>
+        <td>Judul</td>
+        <td>:</td>
+        <td><input type="text" id="judul" name="judul" /></td>
+        <td><button onclick="put()">UPDATE</button></td>
+      </tr>
+      <tr>
+        <td>Tembusan</td>
+        <td>:</td>
+        <td><input type="text" id="tembusan" name="tembusan" /></td>
+        <td><button onclick="delID()" color="red">DELETE</button></td>
+      </tr>
+      <tr>
+        <td>file</td>
+        <td>:</td>
+        <td><input type="file" id="file" name="file" /></td>
+      </tr>
+      <tr>
+        <td>Time Stamp</td>
+        <td>:</td>
+        <td><input type="text" id="timeStamp" name="timestamp" /></td>
+      </tr>
+    </table>
+
+    <hr />
+    <br />
+    <div id="view"></div>
+    <table id="mytable" border="">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nomer Surat</th>
+          <th>Judul</th>
+          <th>Tembusan</th>
+          <th>File</th>
+          <th>Time Stamp</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    </body>
+</html>
